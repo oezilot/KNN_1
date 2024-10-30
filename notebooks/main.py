@@ -19,6 +19,6 @@ print(dataset.info())
 # welches merkmal möchte man predicten? (=target)
 #print(dataset['Price']) # den resi für alle rows printen
 
-# welche merkmale könnten desen presi beeinflussen? (=features)
+# welche merkmale könnten das targetvalue beeinflussen? (=features)
 features = ['Rooms', 'Type', 'Date', 'Bathroom', 'Bedroom2', 'Car', 'YearBuilt' ,'CouncilArea']
 #print(dataset[features])
