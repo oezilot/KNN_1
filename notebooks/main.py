@@ -74,9 +74,23 @@ def MAE(liste_mit_baumtiefen):
     print(depth_error_list)
     return depth_error_list
 # die verschiedenen baumtiefen vergleichen und anhand ihres errors auswerten (je kleiner der error desto besser ist die baumtiefe!)
-# aus der liste mit tuples das tuple auswählen welches den tiefsten wer für den error hat (jeweils das 2te tuple-element jedes tuples)
 
-optimal_depth = min(MAE(max_depth_values))
+# diese funktion returnt den wert (erstes tupleelement) des tiefsten errors (2tes tupleelement) zurück
+def optimal(liste_mit_tuples):
+    # Erzeuge eine Liste aller Fehlerwerte (zweite Elemente der Tupel)
+    alle_errors = [i[1] for i in liste_mit_tuples]
+    
+    # Finde den kleinsten Fehlerwert
+    min_error = min(alle_errors)
+    
+    # Finde das erste Tupel, bei dem der zweite Wert (Fehler) gleich dem minimalen Fehler ist
+    for tupel in liste_mit_tuples:
+        if tupel[1] == min_error:
+            return tupel[0]  # Gib das erste Element dieses Tupels zurück
+
+optimal_depth = optimal(depth_error_list)
+print(optimal_depth)
+
 
 
 
