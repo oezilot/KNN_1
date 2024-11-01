@@ -17,6 +17,12 @@ from sklearn.metrics import mean_absolute_error as mae # hiermit wird der mae be
 from sklearn.ensemble import RandomForestRegressor 
 
 
+# resultatssheet definieren: für jede art des models werden die resultate übersichtlich herausgprintet und in einer gewissen darstellung sichtbar und vergleichbar gemacht (ein dictionary hier machen?)
+resultate1a = None # tree_prediction
+resultate1b = None
+resultate2 = None # forest_prediction
+
+
 #======= Load and read Data  ========
 # load data
 dataset_path = "data/melb_data.csv"
@@ -49,12 +55,12 @@ model1 = DecisionTreeRegressor(random_state=0) # random_state=number: randomness
 # fit the model
 model1.fit(X_train, y_train)
 # make predictions
-prediction1 = model1.predict(X_test)
+prediction1a = model1.predict(X_test)
 # print(prediction)
 
 
 #=======  Abweichung berechnen allg. (MAE)  ========
-error1 = mae(prediction1, y_test) # diese funktion berechnet den durchscnitt von allen differenzen zwischen prediction und dem eigentlichen targetwert der testdaten
+error1a = mae(prediction1a, y_test) # diese funktion berechnet den durchscnitt von allen differenzen zwischen prediction und dem eigentlichen targetwert der testdaten
 # print(error)
 
 
@@ -70,8 +76,9 @@ depth_error_list = [] # leere liste aus tupln
 depth_error_tuple = () # tuple bestehend aus kandidat für baumtiefe und seinem mae
 beste_baumtiefe = None
 kleinster_error = 100000000000000000000 # das könnte man auch schöner machen hier!!!
+prediction1b = None
 # resultate = ""
-# (allg. funktion die den MAE berechnent in abhängigkeit der baumtiefe) --> man macht predictions mit allen kanidaten und beschliesst anhand des errors welcher der der kleinste ist
+# (allg. funktion die den MAE des model1 berechnent in abhängigkeit der baumtiefe) --> man macht predictions mit allen kanidaten und beschliesst anhand des errors welcher der der kleinste ist
 def MAE(liste_mit_baumtiefen, X_train, y_train, X_test, y_test):
     for baumtiefe in liste_mit_baumtiefen:
             model = DecisionTreeRegressor(max_depth_value=baumtiefe, random_state=0)
@@ -80,14 +87,14 @@ def MAE(liste_mit_baumtiefen, X_train, y_train, X_test, y_test):
             error = mae(prediction, y_test)
             if error < kleinster_error:
                  kleinster_error = error
-                 beste_baumtiefe = baumtiefe 
+                 beste_baumtiefe = baumtiefe
+                 prediction1b = prediction 
             # depth_error_tuple = (baumtiefe, error)
             # depth_error_list = depth_error_list.append(depth_error_tuple)
             # resultate = f"Baumtiefe:{baumtiefe}, Error:{error}" # resultate für jeden loop herausprinten!
             # print(resultate)
     # print(depth_error_list)
-    return kleinster_error, beste_baumtiefe # nun kann man beste_baumtiefe in das model als parameter für max_depth_value=beste_baumtiefe
-
+    return kleinster_error, beste_baumtiefe, prediction1b # nun kann man beste_baumtiefe in das model als parameter für max_depth_value=beste_baumtiefe
 
 
 # 2. Optimierung: Random forests (besserer modeltyp; um die gesamtprediction des tarets zu berechnen wird das mittel von mehreren verschiedenen trees verwendet)
@@ -96,6 +103,12 @@ model2 = RandomForestRegressor(random_state=12) # braucht es hier auch max_depth
 model2.fit(X_train, y_train)
 prediction2 = model2.predict(X_test)
 error2 = mae(prediction2, y_test)
-print(prediction2, error2)
 
+
+
+# Resultate (Verschiedene Models vergleichen!)
+resultat1a = f"Tree ohne Optimierung:{prediction1a}, Error:{error1a}"
+resultat1b = f"Tree mit Optimierung:{prediction1b}, Error:{kleinster_error}"
+resultat2 = f"Forest:{prediction2}. Error:{error2}"
+print(resultat1a, resultat1b, resultat2)
 
