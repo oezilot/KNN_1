@@ -12,6 +12,9 @@ list_of_tuples = [(1, 2), (3, 4), (5, 6)]
 for i in list_of_tuples:
     print(i[0])
 
+
+max_depth_values = [1, 2, 3, 4, 5, 10, 15, 20, 30, 50, None] # liste mit den kandidaten für die verschiedenen zu testenden baumtiefen; je kleiner der datensatz desto schneller kann overfitting passieren (overfitting = zu viele nodes)
+depth_error_list = []
 # diese funktion returnt den wert (erstes tupleelement) des tiefsten errors (2tes tupleelement) zurück
 def optimal(liste_mit_tuples):
     # Erzeuge eine Liste aller Fehlerwerte (zweite Elemente der Tupel)

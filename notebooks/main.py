@@ -34,12 +34,12 @@ target = dataset['Price']
 # Features
 features = ['Rooms', 'Type', 'Bathroom', 'Bedroom2','Landsize', 'BuildingArea', 'Car', 'YearBuilt' ,'CouncilArea', 'RegionName']
 # 4 Datentypen-Aufteilung (diese funktion nimmt features und target und unterteilt diese in jeweils 75 und 25 häufchen, zurück wird ein multiple gegeben)
-X_train, X_test, y_train, y_test = train_test_split(features, target, random_state=0, train_size=.75) # random_state makes sure that each round the same random set is chosen || train_size puts 75% into the training data and 25% in the testing data
+X_train, X_test, y_train, y_test = train_test_split(features, target, random_state=0, train_size=.75) # random_state makes sure that each round the same random set is chosen (each number for random_state=number stands for a different randomness) || train_size puts 75% into the training data and 25% in the testing data
 
 
 #=======  Modell kreieren, fitten und predictions machen (allg.)  ========
 # choose a model
-model = DecisionTreeRegressor(random_state=0) # max_depth= ...als input kann man noch max_depth hineintun sobald man weiss wie viele knoten maximal der baum haben soll um under/overfitting zu vermeiden
+model = DecisionTreeRegressor(random_state=0) # random_state=number: randomness wird verwendet bei der konstellation der verschiedenen datenpunkten || max_depth= ...als input kann man noch max_depth hineintun sobald man weiss wie viele knoten maximal der baum haben soll um under/overfitting zu vermeiden
 # fit the model
 model.fit(X_train, y_train)
 # make predictions
@@ -63,12 +63,12 @@ max_depth_values = [1, 2, 3, 4, 5, 10, 15, 20, 30, 50, None] # liste mit den kan
 depth_error_list = [] # leere liste aus tupln
 depth_error_tuple = () # tuple bestehend aus kandidat für baumtiefe und seinem mae
 beste_baumtiefe = None
-kleinster_error = None
+kleinster_error = 100000000000000000000 # das könnte man auch schöner machen hier!!!
 # resultate = ""
 # (allg. funktion die den MAE berechnent in abhängigkeit der baumtiefe) --> man macht predictions mit allen kanidaten und beschliesst anhand des errors welcher der der kleinste ist
-def MAE(liste_mit_baumtiefen):
+def MAE(liste_mit_baumtiefen, X_train, y_train, X_test, y_test):
     for baumtiefe in liste_mit_baumtiefen:
-            model = DecisionTreeRegressor(max_depth_value=baumtiefe)
+            model = DecisionTreeRegressor(max_depth_value=baumtiefe, random_state=0)
             model.fit(X_train, y_train)
             prediction = model.predict(X_test)
             error = mae(prediction, y_test)
@@ -84,6 +84,7 @@ def MAE(liste_mit_baumtiefen):
 
 
 
+# 1. Optimierung: Optimale Baumtiefe (anz. Nodes) finden
 
 
 
