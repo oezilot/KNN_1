@@ -66,22 +66,47 @@ MAE(max_depth_values, X_train, y_train, X_test, y_test)
 
 #===================== vershiedene Models trainieren und fitten, predictions
 
+# vorhersage-beispiel: (auf der website muss man nach den verschiedenen optionen nachschauen)
+feature_values = {
+    'Rooms': [3],
+    'Type_h': [1],  # Beispiel: Hot Encoding für 'Type'
+    'Bathroom': [1],
+    'Bedroom2': [2],
+    'Landsize': [450],
+    'BuildingArea': [120],
+    'Car': [2],
+    'YearBuilt': [1990],
+    'CouncilArea_Boroondara': [1],  # Beispiel: Hot Encoding für 'CouncilArea'
+    'Regionname_Eastern': [0] 
+}
+# die simulationsdaten in eine form bringen die dem csv-stil entspricht
+# Wende die gleiche One-Hot-Codierung auf die Testdaten an
+feature_inputs = pd.DataFrame(feature_values)
+
+feature_inputs = pd.get_dummies(feature_inputs)
+
+# Stelle sicher, dass die Feature-Daten die gleichen Spalten wie das Trainings-Feature haben
+feature_inputs = feature_inputs.reindex(columns=X_train.columns, fill_value=0)
+
 # Model ohne Optimierung
 model = DecisionTreeRegressor(random_state=1)
 model.fit(X_train, y_train)
 prediction = model.predict(X_test)
+prediction_simulation = model.predict(feature_inputs)
 error = mae(prediction, y_test)
 
 # Train Decision Tree with optimal depth 
 model1 = DecisionTreeRegressor(max_depth=beste_baumtiefe, random_state=0)
 model1.fit(X_train, y_train)
 prediction1 = model1.predict(X_test)
+prediction1_simulation = model1.predict(feature_inputs)
 error1 = mae(prediction1, y_test)
 
 # Train Random Forest
 model2 = RandomForestRegressor(random_state=12)
 model2.fit(X_train, y_train)
 prediction2 = model2.predict(X_test)
+prediction2_simulation = model2.predict(feature_inputs)
 error2 = mae(prediction2, y_test)
 
 
@@ -97,10 +122,20 @@ error_dictionary['Random-Forest'] = float(error2)
 
 
 # eine prediction für spezifische werte der parameter
+resultate_simulation = {}
+
+resultate_simulation['Prediction_dt'] = prediction_simulation
+resultate_simulation['Prediction_dto'] = prediction1_simulation
+resultate_simulation['Prediction_rf'] = prediction2_simulation
 
 
 # error-dictionary printen
-print(f"Model Errors: {error_dictionary}")
+print(f"Model Errors: \n{error_dictionary}")
+
+print("")
+
+# simulations-dictionary printen
+print(f"Simulations-Bsp.: \n{resultate_simulation}")
 
 
 
